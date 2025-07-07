@@ -1,4 +1,3 @@
-//todo tengo que leer la info
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import shortUUID from "short-uuid";
@@ -8,6 +7,10 @@ const ticketListPath = path.join('data/ticket-list.json');
 const getListTickets = () => {
     const data = readFileSync(ticketListPath , {encoding: 'utf8'});
     return JSON.parse(data);
+}
+
+export const getTotalTicket = () => {
+    return getListTickets().length;
 }
 const getTicketFromQueueAndDelete = () => {
     if (getListTickets().length < 1) {
@@ -27,7 +30,7 @@ export const getNextTicketAndAmount = () => {
     const nextTicket = getTicketFromQueueAndDelete();
     return {
         nextTicket: nextTicket,
-        totalTickets: totalTickets.length
+        totalTickets: totalTickets.length - 1
     };
 }
 
@@ -37,6 +40,5 @@ export const ticketGenerator = () => {
     data[data.length] = { ticket: idTicket };
     console.log(` info: ${data}`);
     writerDB(data);
-    //writeFileSync(ticketListPath, JSON.stringify(data), {encoding: 'utf8'});
     return idTicket;
 }

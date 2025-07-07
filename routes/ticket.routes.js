@@ -8,7 +8,7 @@ class TicketRoute {
     }
     routes(){
         this.router.get('/newticket', ticketController.getNewTicket);
-        this.router.get('/ticketqueue', ticketController.getTicketQueue);
+        this.router.get('/ticketqueue/:id', ticketController.getTicketQueue);
     }
 }
 

@@ -1,24 +1,29 @@
 import express from 'express';
 import { getSocket } from '../socket/socket.js';
-import { v4 as uuidv4 } from 'uuid';
-import { getNextTicketAndAmount, ticketGenerator } from '../helpers/ticket-list-handler.js';
+import { getNextTicketAndAmount, getTotalTicket, ticketGenerator } from '../helpers/ticket-list-handler.js';
 
 class TicketController {
     getNewTicket(  req = express.request, res = express.response   ){
-        //todo tengo que generar una queue de tickets
         const io = getSocket();
         const ticketNumber = ticketGenerator();
+        const totalTickets = getTotalTicket();
         io.emit('new-ticket', {ticket: ticketNumber});
+        io.emit('get-total-tickets', totalTickets);
         res.status(200).json({
             ticket: ticketNumber
         });
     }
 
     getTicketQueue(req = express.request, res = express.response) {
-        //todo deberia de tener un array de tickets para sacar uno de ahi y enviarlo
+        //todo: read the id the is coming from the fronted
+        const {id} = req.params;
         const { nextTicket, totalTickets} = getNextTicketAndAmount();
-        
+        console.log(totalTickets);
         const io = getSocket();
+        io.emit('ticket-list', {
+            ticket: nextTicket,
+            desk: id
+        });
         io.emit('get-ticket-queue',
              {
                 ticket: nextTicket,
